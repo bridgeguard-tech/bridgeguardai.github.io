@@ -463,9 +463,9 @@ body.light footer {
 
 @media (max-width: 600px) {
 
-    header h1 {
-        font-size: 30px;
-    }
+  #sensorPage header h1 {
+    font-size: 30px;
+}
 
     #topRightControls {
         top: 10px;

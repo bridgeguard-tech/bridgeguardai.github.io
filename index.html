@@ -425,7 +425,141 @@
                 top: 10px;
             }
         }
-</style></head>
+</style>
+<style id="bridgeguard-dashboard-isolation">
+/* =========================================================
+   BRIDGEGUARD SINGLE-PAGE FIX
+   Map and dashboard stay on the same index.html.
+   This layer prevents map header/body rules from affecting
+   the sensor dashboard.
+   ========================================================= */
+
+#mapPage {
+    display: block;
+    min-height: 100vh;
+}
+
+#sensorPage {
+    display: none;
+    position: relative;
+    min-height: 100vh;
+    padding-top: 150px;
+    background: #000000;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+/* Dashboard header must NOT inherit the map header layout */
+#sensorPage > #dashboardHeader,
+#dashboardHeader {
+    height: auto !important;
+    min-height: 0 !important;
+    display: block !important;
+    text-align: center !important;
+    align-items: initial !important;
+    padding: 40px 20px !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+#sensorPage > #dashboardHeader h1,
+#dashboardHeader h1 {
+    font-size: 42px !important;
+    margin: 0 0 10px !important;
+    color: #ffffff !important;
+}
+
+#sensorPage > #dashboardHeader p,
+#dashboardHeader p {
+    color: #aaa !important;
+    font-size: 16px !important;
+    margin: 0 !important;
+}
+
+/* Dashboard content */
+#sensorPage .overview,
+#sensorPage .sensor-grid,
+#sensorPage .graph-section,
+#sensorPage #detailsPanel,
+#sensorPage .alerts {
+    position: relative;
+    z-index: 1;
+}
+
+/* Keep dashboard cards independent of map styles */
+#sensorPage .overview-card,
+#sensorPage .sensor-card,
+#sensorPage #detailsPanel,
+#sensorPage .alerts,
+#sensorPage .detail-card {
+    font-family: Arial, sans-serif;
+}
+
+/* Back button */
+#backToMapBtn {
+    position: fixed !important;
+    left: 25px !important;
+    top: 20px !important;
+    z-index: 10001 !important;
+    border: 1px solid rgba(0, 230, 118, 0.45) !important;
+    background: rgba(0, 230, 118, 0.10) !important;
+    color: #00e676 !important;
+    padding: 10px 16px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    font-weight: 700 !important;
+}
+
+#backToMapBtn:hover {
+    background: rgba(0, 230, 118, 0.18) !important;
+}
+
+/* Light mode applies only to the dashboard */
+body.light #sensorPage {
+    background: #f2f5ff;
+    color: #111111;
+}
+
+body.light #sensorPage > #dashboardHeader h1,
+body.light #dashboardHeader h1 {
+    color: #111111 !important;
+}
+
+body.light #sensorPage > #dashboardHeader p,
+body.light #dashboardHeader p {
+    color: #555 !important;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    #sensorPage {
+        padding-top: 120px;
+    }
+
+    #sensorPage > #dashboardHeader,
+    #dashboardHeader {
+        padding: 30px 15px !important;
+    }
+
+    #sensorPage > #dashboardHeader h1,
+    #dashboardHeader h1 {
+        font-size: 30px !important;
+    }
+
+    #sensorPage > #dashboardHeader p,
+    #dashboardHeader p {
+        font-size: 14px !important;
+    }
+
+    #backToMapBtn {
+        left: 10px !important;
+        top: 10px !important;
+    }
+}
+</style>
+
+</head>
 <body><div id="mapPage">
 <!-- ================================
          HEADER

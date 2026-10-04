@@ -1565,202 +1565,99 @@ const bridgeLongitude =
 async function updateWeather() {
 
     const currentBox =
-        document.getElementById(
-            "weatherCurrent"
-        );
-
+        document.getElementById("weatherCurrent");
 
     const forecastBox =
-        document.getElementById(
-            "weatherForecast"
-        );
+        document.getElementById("weatherForecast");
 
-
-    if (
-        !currentBox ||
-        !forecastBox
-    ) {
-
+    if (!currentBox || !forecastBox) {
         return;
     }
-
 
     try {
 
         const url =
-
             `https://api.open-meteo.com/v1/forecast?` +
-
             `latitude=${bridgeLatitude}` +
-
             `&longitude=${bridgeLongitude}` +
-
             `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max` +
-
             `&timezone=auto` +
-
             `&forecast_days=5`;
 
-
-        const response =
-            await fetch(url);
-
+        const response = await fetch(url);
 
         if (!response.ok) {
-
             throw new Error(
-                "Weather API error"
+                "Weather API HTTP " + response.status
             );
-
         }
 
-
-        const data =
-            await response.json();
-
-
-        // ==================================================
-        // CURRENT WEATHER AREA
-        // ==================================================
-
-        currentBox.innerHTML = `
-
-            <div class="currentWeather">
-
-                <strong>
-
-                    Weather Forecast
-
-                </strong>
-
-                <div>
-
-                    ${weatherName(
-                        data.daily.weather_code[0]
-                    )}
-
-                </div>
-
-            </div>
-
-        `;
-
-
-        // ==================================================
-        // 5-DAY FORECAST
-        // ==================================================
+        const data = await response.json();
 
         let forecastHTML = `
-
             <div class="forecastTitle">
-
                 5-Day Forecast
-
             </div>
-
         `;
 
+        for (let i = 0; i < data.daily.time.length; i++) {
 
-        for (
+            const date = new Date(
+                data.daily.time[i]
+            );
 
-            let i = 0;
-
-            i < data.daily.time.length;
-
-            i++
-
-        ) {
-
-            const date =
-
-                new Date(
-                    data.daily.time[i]
-                );
-
-
-            const day =
-
-                date.toLocaleDateString(
-
-                    "en-US",
-
-                    {
-                        weekday:
-                            "short"
-                    }
-
-                );
-
+            const day = date.toLocaleDateString(
+                "en-US",
+                {
+                    weekday: "short"
+                }
+            );
 
             forecastHTML += `
-
                 <div class="forecastItem">
 
-                    <strong>
-
-                        ${day}
-
-                    </strong>
-
+                    <strong>${day}</strong>
 
                     <span>
-
                         ${weatherName(
                             data.daily.weather_code[i]
                         )}
-
                     </span>
-
 
                     <span>
-
                         ${data.daily.temperature_2m_max[i]}°
-
                         /
-
                         ${data.daily.temperature_2m_min[i]}°
-
                     </span>
 
-
                     <small>
-
                         Rain:
-
                         ${data.daily.precipitation_probability_max[i]}%
-
                     </small>
 
-
                     <small>
-
-                        Rainfall:
-
                         ${data.daily.precipitation_sum[i]} mm
-
                     </small>
 
-
                     <small>
-
                         Wind:
-
                         ${data.daily.wind_speed_10m_max[i]} km/h
-
                     </small>
 
                 </div>
-
             `;
-
         }
 
+        // Don't show current temperature/humidity here.
+        currentBox.innerHTML = `
+            <div class="currentWeather">
+                <strong>Weather Forecast</strong>
+            </div>
+        `;
 
-        forecastBox.innerHTML =
-            forecastHTML;
+        forecastBox.innerHTML = forecastHTML;
 
     }
-
 
     catch (error) {
 
@@ -1769,16 +1666,13 @@ async function updateWeather() {
             error
         );
 
-
         currentBox.innerHTML =
-            "Unable to load weather";
-
+            "Weather unavailable";
 
         forecastBox.innerHTML =
-            "Forecast unavailable";
+            "Unable to load forecast";
 
     }
-
 }
 // ======================================================
 // WEATHER DESCRIPTION

@@ -1595,28 +1595,32 @@ async function updateWeather() {
 
             `&longitude=${bridgeLongitude}` +
 
-            `&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m` +
-
-            `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max` +
+            `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max` +
 
             `&timezone=auto` +
 
             `&forecast_days=5`;
 
 
-      const data = window.latestFirebaseData;
-
-if (!data) {
-    return;
-}
+        const response =
+            await fetch(url);
 
 
-        const current =
-            data.current;
+        if (!response.ok) {
+
+            throw new Error(
+                "Weather API error"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
 
 
         // ==================================================
-        // CURRENT WEATHER
+        // CURRENT WEATHER AREA
         // ==================================================
 
         currentBox.innerHTML = `
@@ -1625,34 +1629,15 @@ if (!data) {
 
                 <strong>
 
-                    ${weatherName(
-                        current.weather_code
-                    )}
+                    Weather Forecast
 
                 </strong>
 
-
-                <div class="currentTemperature">
-
-                    ${current.temperature_2m}°C
-
-                </div>
-
-
                 <div>
 
-                    Humidity:
-
-                    ${current.relative_humidity_2m}%
-
-                </div>
-
-
-                <div>
-
-                    Wind:
-
-                    ${current.wind_speed_10m} km/h
+                    ${weatherName(
+                        data.daily.weather_code[0]
+                    )}
 
                 </div>
 
@@ -1746,6 +1731,24 @@ if (!data) {
 
                     </small>
 
+
+                    <small>
+
+                        Rainfall:
+
+                        ${data.daily.precipitation_sum[i]} mm
+
+                    </small>
+
+
+                    <small>
+
+                        Wind:
+
+                        ${data.daily.wind_speed_10m_max[i]} km/h
+
+                    </small>
+
                 </div>
 
             `;
@@ -1768,16 +1771,15 @@ if (!data) {
 
 
         currentBox.innerHTML =
-            "⚠️ Unable to load weather";
+            "Unable to load weather";
 
 
         forecastBox.innerHTML =
             "Forecast unavailable";
+
     }
 
 }
-
-
 // ======================================================
 // WEATHER DESCRIPTION
 // ======================================================

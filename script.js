@@ -1323,13 +1323,55 @@ async function getESP8266Data() {
 // GET REAL SENSOR DATA EVERY 1 SECOND
 // ======================================================
 
-getESP8266Data();
+// ======================================================
+// REAL-TIME FIREBASE SENSOR STREAM
+// ======================================================
+
+const FIREBASE_STREAM_URL =
+    "https://bridgeguard8-default-rtdb.asia-southeast1.firebasedatabase.app/sensors.json";
+
+window.latestFirebaseData = null;
 
 
-setInterval(
-    getESP8266Data,
-    1000
+const firebaseStream =
+    new EventSource(
+        FIREBASE_STREAM_URL
+    );
+
+
+firebaseStream.addEventListener(
+    "put",
+    function (event) {
+
+        const message =
+            JSON.parse(event.data);
+
+
+        if (
+            message.path === "/" &&
+            message.data
+        ) {
+
+            window.latestFirebaseData =
+                message.data;
+
+
+            getESP8266Data();
+
+        }
+
+    }
 );
+
+
+firebaseStream.onerror =
+    function () {
+
+        console.error(
+            "Firebase real-time connection error"
+        );
+
+    };
 // ======================================================
 // ALERT SYSTEM
 // ======================================================
@@ -1562,20 +1604,11 @@ async function updateWeather() {
             `&forecast_days=5`;
 
 
-        const response =
-            await fetch(url);
+      const data = window.latestFirebaseData;
 
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Weather API failed"
-            );
-        }
-
-
-        const data =
-            await response.json();
+if (!data) {
+    return;
+}
 
 
         const current =

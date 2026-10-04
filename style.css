@@ -190,7 +190,7 @@ body.light #themeBtn:hover {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 2px;
+    gap: 8px;
     margin-top: 8px;
     font-size: 13px;
 }

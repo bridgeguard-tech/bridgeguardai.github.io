@@ -187,16 +187,19 @@ body.light #themeBtn:hover {
 }
 
 .forecastItem {
-    display: grid;
-    grid-template-columns: 45px 30px 1fr;
-    gap: 5px;
-    align-items: center;
-    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    margin-top: 8px;
     font-size: 13px;
 }
 
+.forecastItem strong {
+    margin-bottom: 2px;
+}
+
 .forecastItem small {
-    grid-column: 3;
     color: #aaa;
 }
 

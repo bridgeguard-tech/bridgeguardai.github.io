@@ -5,13 +5,11 @@
 
 
 // ======================================================
-// ESP8266 API
+// FIREBASE SENSOR DATA
 // ======================================================
 
-const ESP8266_IP = "10.168.203.62";
-
-const API_URL =
-    `http://${ESP8266_IP}/api/data`;
+const FIREBASE_URL =
+    "https://bridgeguard8-default-rtdb.asia-southeast1.firebasedatabase.app/sensors.json";
 
 
 // ======================================================
@@ -28,7 +26,6 @@ function toggleTheme() {
     if (!themeIcon) {
         return;
     }
-
 
     if (
         document.body.classList.contains("light")
@@ -687,8 +684,6 @@ const vibrationChart =
 
         }
     );
-
-
 // ======================================================
 // TEMPERATURE GRAPH
 // ======================================================
@@ -858,7 +853,7 @@ const humidityChart =
 
 
 // ======================================================
-// REAL ESP8266 DATA
+// REAL FIREBASE DATA
 // ======================================================
 
 async function getESP8266Data() {
@@ -867,7 +862,7 @@ async function getESP8266Data() {
 
         const response =
             await fetch(
-                API_URL,
+                FIREBASE_URL,
                 {
                     cache:
                         "no-store"
@@ -878,13 +873,21 @@ async function getESP8266Data() {
         if (!response.ok) {
 
             throw new Error(
-                "ESP8266 API error"
+                "Firebase API error"
             );
         }
 
 
         const data =
             await response.json();
+
+
+        if (!data) {
+
+            throw new Error(
+                "No sensor data"
+            );
+        }
 
 
         // SAVE PREVIOUS VALUES
@@ -1280,7 +1283,7 @@ async function getESP8266Data() {
         // CONSOLE
 
         console.log(
-            "ESP8266 DATA:",
+            "FIREBASE SENSOR DATA:",
             data
         );
 
@@ -1290,7 +1293,7 @@ async function getESP8266Data() {
     catch (error) {
 
         console.error(
-            "ESP8266 CONNECTION ERROR:",
+            "FIREBASE CONNECTION ERROR:",
             error
         );
 
@@ -1327,8 +1330,6 @@ setInterval(
     getESP8266Data,
     1000
 );
-
-
 // ======================================================
 // ALERT SYSTEM
 // ======================================================
